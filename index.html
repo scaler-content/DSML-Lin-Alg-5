@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linear Algebra 5 post read</title>
+<style>
+:root{
+  --green-900:#0B3D2E; --green-800:#145C45; --green-700:#1F7A5C;
+  --pink:#F2A6C6; --pink-dark:#DD6FA0; --pink-light:#FCE7F0;
+  --gray-700:#2E3B36; --gray-500:#5C6B65; --gray-300:#C9D6D0;
+  --gray-200:#E3ECE8; --gray-100:#F1F6F3; --gray-50:#FAFBFA; --white:#FFFFFF;
+  --radius:14px; --shadow:0 4px 20px rgba(11,61,46,0.08); --shadow-lg:0 10px 40px rgba(11,61,46,0.14); --maxw:860px;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--gray-700); background:var(--gray-50); line-height:1.65;}
+h1,h2,h3,h4{font-weight:800; letter-spacing:-0.01em; color:var(--green-900);}
+a{color:var(--pink-dark);}
+img{max-width:100%;}
+.hero{position:relative; background:linear-gradient(160deg,var(--green-900) 0%,var(--green-800) 60%,#0A2E22 100%); color:var(--white); padding:88px 24px 150px; overflow:hidden; text-align:center;}
+.hero::before{content:""; position:absolute; top:-120px; right:-120px; width:420px; height:420px; background:radial-gradient(circle,rgba(242,166,198,0.5),transparent 70%); filter:blur(10px);}
+.hero::after{content:""; position:absolute; bottom:-160px; left:-100px; width:380px; height:380px; background:radial-gradient(circle,rgba(242,166,198,0.22),transparent 70%);}
+.eyebrow{display:inline-block; font-size:12.5px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--pink); background:rgba(242,166,198,0.14); border:1px solid rgba(242,166,198,0.45); padding:6px 14px; border-radius:999px; margin-bottom:22px; position:relative; z-index:2;}
+.hero h1{font-size:clamp(32px,5vw,52px); margin:0 0 16px; color:var(--white); position:relative; z-index:2;}
+.hero p.sub{max-width:620px; margin:0 auto; font-size:18px; color:var(--gray-300); position:relative; z-index:2;}
+.toc{max-width:var(--maxw); margin:-96px auto 56px; background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow-lg); padding:28px 32px; position:relative; z-index:3; border:1px solid var(--gray-200);}
+.toc h3{font-size:13px; text-transform:uppercase; letter-spacing:0.1em; color:var(--pink-dark); margin:0 0 14px;}
+.toc ol{margin:0; padding:0; list-style:none; display:grid; grid-template-columns:1fr 1fr; gap:8px 28px;}
+.toc li a{display:block; text-decoration:none; color:var(--gray-700); font-size:15px; font-weight:600; padding:6px 0; border-bottom:1px dashed var(--gray-200);}
+.toc li a:hover{color:var(--pink-dark);}
+.wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px;}
+section.block{padding:52px 0; border-bottom:1px solid var(--gray-200);}
+section.block:last-of-type{border-bottom:none;}
+section.block h2{font-size:28px; margin:0 0 22px; display:inline-block; border-bottom:4px solid var(--pink); padding-bottom:8px;}
+section.block h3{font-size:19px; margin:30px 0 12px; color:var(--green-800);}
+section.block p{font-size:16.5px; color:var(--gray-700); margin:0 0 16px;}
+.card{background:var(--white); border:1px solid var(--gray-200); border-radius:var(--radius); padding:22px 24px; box-shadow:var(--shadow); margin:20px 0;}
+.callout{border-left:4px solid var(--pink); background:var(--pink-light); padding:16px 20px; border-radius:0 10px 10px 0; margin:20px 0; font-size:15.5px; color:var(--green-900);}
+.insight{background:var(--green-900); color:var(--white); border-radius:var(--radius); padding:22px 26px; margin:24px 0; position:relative;}
+.insight::before{content:"KEY INSIGHT"; display:block; font-size:11.5px; letter-spacing:0.12em; color:var(--pink); font-weight:800; margin-bottom:8px;}
+.formula-block{background:var(--green-900); color:var(--pink-light); border-radius:12px; padding:20px 26px; margin:20px 0; font-size:18px; text-align:center; font-style:italic; font-family:"Georgia",serif; letter-spacing:0.02em; overflow-x:auto;}
+table{width:100%; border-collapse:collapse; margin:18px 0; font-size:15px;}
+th,td{padding:10px 14px; border:1px solid var(--gray-200); text-align:left;}
+th{background:var(--gray-100); font-weight:700; color:var(--green-900);}
+tr:nth-child(even) td{background:var(--gray-50);}
+.accordion{margin:20px 0;}
+.acc-item{border:1px solid var(--gray-200); border-radius:10px; margin-bottom:10px; overflow:hidden; background:var(--white);}
+.acc-head{display:flex; justify-content:space-between; align-items:center; cursor:pointer; padding:16px 20px; font-weight:700; color:var(--green-900); background:var(--white);}
+.acc-head:hover{background:var(--gray-50);}
+.acc-head .plus{color:var(--pink-dark); font-size:20px; transition:transform .25s;}
+.acc-item.open .plus{transform:rotate(45deg);}
+.acc-body{max-height:0; overflow:hidden; transition:max-height .3s ease; padding:0 20px;}
+.acc-body-inner{padding:4px 0 18px; font-size:15.5px; color:var(--gray-700);}
+.acc-head:focus-visible, .tab-btn:focus-visible, button:focus-visible, input:focus-visible{outline:3px solid var(--pink-dark); outline-offset:2px;}
+.sim-box{background:var(--white); border:1px solid var(--gray-200); border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); margin:22px 0;}
+.sim-controls{display:flex; flex-wrap:wrap; gap:22px; align-items:center; margin-bottom:16px;}
+.sim-controls label{font-size:14px; font-weight:700; color:var(--green-900); display:flex; flex-direction:column; gap:6px;}
+input[type=range]{width:220px; accent-color:var(--pink-dark);}
+.pill{display:inline-block; background:var(--pink-dark); color:var(--white); font-weight:800; padding:4px 12px; border-radius:999px; font-size:13.5px;}
+.sim-result{font-size:15.5px; color:var(--green-900); background:var(--gray-50); border-radius:10px; padding:14px 18px;}
+.badge{display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:50%; background:var(--pink-dark); color:var(--white); font-weight:800; font-size:13px; margin-right:10px;}
+footer{background:var(--green-900); color:var(--gray-300); text-align:center; padding:40px 24px; font-size:14px;}
+footer .title{color:var(--white); font-weight:800; font-size:16px; margin-bottom:6px;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="eyebrow">Linear Algebra Series · Part 5</span>
+  <h1>Linear Algebra 5 post read</h1>
+  <p class="sub">Five worked problems that pull together everything from this series — projections, unit vectors, parallel-line distance, and the direction a perceptron rotates toward.</p>
+</div>
+
+<nav class="toc">
+  <h3>On this page</h3>
+  <ol>
+    <li><a href="#p1">Problem 1 — projection &amp; orthogonality</a></li>
+    <li><a href="#p2">Problem 2 — angle from unit vectors</a></li>
+    <li><a href="#p3">Problem 3 — distance between parallel lines</a></li>
+    <li><a href="#p4">Problem 4 — direction of vector addition</a></li>
+    <li><a href="#p5">Problem 5 — perceptron rotation direction</a></li>
+  </ol>
+</nav>
+
+<div class="wrap">
+
+<section class="block" id="p1">
+  <h2><span class="badge">1</span>Projection and orthogonality</h2>
+  <p><strong>Problem:</strong> Given x̄ = [2, 1, −3] and ȷ̄ = [5, 8, 6], find the length of the projection of x onto y.</p>
+  <div class="card">
+    <strong>Solution</strong><br><br>
+    Compute the dot product first: <code>x̄ᵗȲ = (2)(5) + (1)(8) + (−3)(6) = 10 + 8 − 18 = 0</code>.<br><br>
+    Since <code>cos θ = x̄ᵗȲ / (‖x̄‖‖Ȳ‖)</code>, a zero numerator means <code>cos θ = 0</code> — so θ = 90°.
+  </div>
+  <div class="insight">When the dot product of two vectors is zero, they are <strong>orthogonal</strong> (perpendicular) — and the projection of one onto the other has length exactly <strong>0</strong>, regardless of either vector's magnitude.</div>
+</section>
+
+<section class="block" id="p2">
+  <h2><span class="badge">2</span>Angle between two unit vectors</h2>
+  <p><strong>Problem:</strong> a and b are unit vectors. <code>c = a + 2b</code> and <code>d = 5a − 4b</code> are perpendicular. Find the angle between a and b.</p>
+  <div class="card">
+    <strong>Solution</strong><br><br>
+    Since c and d are perpendicular, <code>c·d = 0</code>:
+    <div class="formula-block" style="margin:12px 0;">(a + 2b)·(5a − 4b) = 5‖a‖² + 10(a·b) − 4(a·b) − 8‖b‖² = 0</div>
+    Since a and b are unit vectors, ‖a‖² = ‖b‖² = 1:
+    <div class="formula-block" style="margin:12px 0;">5 + 6(a·b) − 8 = 0 &nbsp;⟶&nbsp; a·b = 1/2</div>
+    Since <code>a·b = ‖a‖‖b‖cos θ = cos θ</code> (both unit vectors), <strong>cos θ = 1/2 ⟶ θ = 60°</strong>.
+  </div>
+</section>
+
+<section class="block" id="p3">
+  <h2><span class="badge">3</span>Distance between two parallel lines</h2>
+  <p><strong>Problem:</strong> Two parallel lines have weight vectors w₁ = [4, 3] and w₂ = [16, 12], with biases w₀₁ = 3 and w₀₂ = 7. Find the distance between them.</p>
+  <div class="card">
+    <strong>Solution</strong><br><br>
+    Notice <code>w₂ = 4·w₁</code> — the two lines are genuinely parallel (same direction, different scale), so dividing the second line's equation through by 4 normalizes it to match the first: effectively w = [4, 3] with biases 3 and 7/4.<br><br>
+    Each line's distance from the origin is <code>−w₀/‖w‖</code>, with <code>‖w‖ = √(4²+3²) = 5</code>. The distance between the two lines is the difference of these two distances.
+  </div>
+
+  <div class="sim-box">
+    <h3 style="margin-top:0;">Try your own values</h3>
+    <div class="sim-controls">
+      <label>‖w‖: <span id="normLabel" class="pill">5</span><input type="range" id="normSlider" min="1" max="30" value="5" step="1"></label>
+      <label>w₀₁: <span id="b1Label2" class="pill">3</span><input type="range" id="b1Slider2" min="-20" max="20" value="3" step="1"></label>
+      <label>w₀₂: <span id="b2Label2" class="pill">7</span><input type="range" id="b2Slider2" min="-20" max="20" value="7" step="1"></label>
+    </div>
+    <div class="sim-result" id="distResult5"></div>
+  </div>
+</section>
+
+<section class="block" id="p4">
+  <h2><span class="badge">4</span>Direction of vector addition</h2>
+  <p><strong>Problem:</strong> Given vectors x and w, define v = x + w. In which direction (relative to w) should we move to reach v — clockwise or counter-clockwise?</p>
+  <div class="card">
+    <strong>Solution</strong><br><br>
+    v always lands <strong>between</strong> x and w (geometrically — place x at w's tip, and v is the vector from the origin to that new tip). There's no universal "clockwise" or "counter-clockwise" answer in isolation — it depends on which side of w the vector x sits. Only introducing a <em>negative</em> sign on one of the vectors (as the perceptron update rule does) picks a definite rotation direction.
+  </div>
+</section>
+
+<section class="block" id="p5">
+  <h2><span class="badge">5</span>Perceptron rotation with a sparse dataset</h2>
+  <p><strong>Problem:</strong> With very few data points, a boundary w with w₀ = 0 misclassifies a point. Is this a good classifier, and which way should w rotate to fix it?</p>
+  <div class="card">
+    <strong>Solution</strong><br><br>
+    No — a line passing through the origin fit to only a handful of points is rarely a good general classifier.<br><br>
+    If the misclassified point is in the <strong>negative</strong> class but lands in the positive halfspace, rotate w <strong>counter-clockwise</strong> — subtract the point's vector: <code>w_new = w_old − x̄</code>.<br><br>
+    If the misclassified point is in the <strong>positive</strong> class but lands in the negative halfspace, rotate w <strong>clockwise</strong> — add the point's vector: <code>w_new = w_old + x̄</code>.
+  </div>
+  <div class="insight">Both cases are summarised by the same update rule from the previous post: <strong>w_new = w_old + yᵢx̄ᵢ</strong>, where yᵢ is the point's true label. The sign of yᵢ automatically picks the correct rotation direction.</div>
+</section>
+
+</div>
+
+<footer>
+  <div class="title">Linear Algebra 5 post read</div>
+  Worked problems: projection · unit vectors · parallel-line distance · perceptron rotation
+</footer>
+
+<script>
+const normSlider=document.getElementById('normSlider'), b1Slider2=document.getElementById('b1Slider2'), b2Slider2=document.getElementById('b2Slider2');
+const normLabel=document.getElementById('normLabel'), b1Label2=document.getElementById('b1Label2'), b2Label2=document.getElementById('b2Label2');
+const distResult5=document.getElementById('distResult5');
+function drawDist5(){
+  const nw=parseInt(normSlider.value), b1=parseInt(b1Slider2.value), b2=parseInt(b2Slider2.value);
+  normLabel.textContent=nw; b1Label2.textContent=b1; b2Label2.textContent=b2;
+  const d1=b1/nw, d2=b2/nw;
+  const d=Math.abs(d1-d2);
+  distResult5.innerHTML=`d₁ = ${b1}/${nw} = <strong>${d1.toFixed(3)}</strong> &nbsp;·&nbsp; d₂ = ${b2}/${nw} = <strong>${d2.toFixed(3)}</strong> &nbsp;·&nbsp; Distance between the lines = <strong>${d.toFixed(3)}</strong>`;
+}
+[normSlider,b1Slider2,b2Slider2].forEach(el=>el.addEventListener('input',drawDist5));
+drawDist5();
+</script>
+</body>
+</html>
